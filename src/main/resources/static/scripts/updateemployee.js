@@ -13,7 +13,8 @@ document.getElementById('employeeForm').addEventListener('submit',function(event
     }, body : JSON.stringify(obj)})
     .then(response => response.text())
     .then(data => {
-       alert(data)
+       alert(data);
+       document.getElementById('employeeForm').reset();
        //location.href = 'http://localhost:8080/allemployees.html';
     })
     .catch(error => console.log(error));
