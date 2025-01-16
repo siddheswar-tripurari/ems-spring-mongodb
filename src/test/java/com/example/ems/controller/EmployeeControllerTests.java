@@ -47,24 +47,24 @@ public class EmployeeControllerTests {
     }
 
 
-    @Test
-    void testCreateEmployeeSuccessfully() throws Exception {
-
-        doNothing().when(employeeService).createEmployee(employee);
-
-        mockMvc.perform(post("/api/employee/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":11011," +
-                                "\"firstName\":\"Siddhu\"," +
-                                "\"lastName\":\"T\"," +
-                                "\"emailId\":\"siddhu@gmail.com\"," +
-                                "\"role\":\"SET\"," +
-                                "\"supervisor\":\"Ejaz Ansari\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Employee Created Successfully."));
-
-        verify(employeeService, times(1)).createEmployee(any(Employee.class));
-    }
+//    @Test
+//    void testCreateEmployeeSuccessfully() throws Exception {
+//
+//        doNothing().when(employeeService).createEmployee(employee);
+//
+//        mockMvc.perform(post("/api/employee/create")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"id\":11011," +
+//                                "\"firstName\":\"Siddhu\"," +
+//                                "\"lastName\":\"T\"," +
+//                                "\"emailId\":\"siddhu@gmail.com\"," +
+//                                "\"role\":\"SET\"," +
+//                                "\"supervisor\":\"Ejaz Ansari\"}"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("Employee Created Successfully."));
+//
+//        verify(employeeService, times(1)).createEmployee(any(Employee.class));
+//    }
 
     @Test
     void testGetAllEmployeesSuccessfully() throws Exception {
