@@ -66,7 +66,7 @@ docker network create spring-to-mongo
 
 ## Create a Docker volume
 
-To store data locally, create a new docker network
+To store data locally, create a new docker volume.
 
 ```bash
 docker volume create mongodata
