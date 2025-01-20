@@ -64,12 +64,22 @@ docker network create spring-to-mongo
 
 ---
 
-## Run the Containers
+## Create a Docker volume
 
-Start the MongoDB container on the created network:
+To store data locally, create a new docker network
 
 ```bash
-docker run -d -p 27017:27017 --network=spring-to-mongo --name mongodb mongodb/mongodb-community-server:latest
+docker network create mongodata
+```
+
+---
+
+## Run the Containers
+
+Start the MongoDB container on the created network and map the container volume to local volume:
+
+```bash
+docker run -d -p 27017:27017 --network=spring-to-mongo -v mongodata:/data/db --name mongodb mongodb/mongodb-community-server:latest
 ```
 
 Run the Spring Boot application container on the same network:
