@@ -5,26 +5,33 @@ import com.example.ems.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EmployeeService {
 
-    int id = 109750;
-
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    int id = 109750;
+
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAllActiveEmployees();
     }
 
-    public void createEmployee(Employee employee){
-        id += 1;
-        employee.setId(id);
-        employee.setStatus("Active");
-        employeeRepository.save(employee);
+    public void createEmployee(Employee newEmployee){
+        if(employeeRepository.count() == 0){
+            id += 1;
+        }else{
+            List<Employee> employees = employeeRepository.getLastInsertedEmployee();
+            id = employees.get(0).getId() + 1;
+        }
+        newEmployee.setId(id);
+        newEmployee.setStatus(true);
+        employeeRepository.save(newEmployee);
     }
 
     public Optional<Employee> getEmployeeById(int id) {
@@ -36,21 +43,20 @@ public class EmployeeService {
             throw new RuntimeException("Employee Not Found. Deleted unsuccessfully.");
         }
         Employee emp = employeeRepository.findById(id).get();
-        emp.setStatus("In-Active");
+        emp.setStatus(false);
         employeeRepository.save(emp);
-
     }
 
-    public void updateEmployee(int id, Employee employee1){
+    public void updateEmployee(int id, Employee updateEmployee){
         try {
-            Employee update = employeeRepository.findById(id).orElseThrow(()-> new Exception("Error"));
-            if(update.getStatus().equals("Active")){
-                update.setFirstName(employee1.getFirstName());
-                update.setLastName(employee1.getLastName());
-                update.setEmailId(employee1.getEmailId());
-                update.setRole(employee1.getRole());
-                update.setSupervisor(employee1.getSupervisor());
-                employeeRepository.save(update);
+            Employee updateEmployeeResponse = employeeRepository.findById(id).orElseThrow(()-> new Exception("Error"));
+            if(updateEmployeeResponse.getStatus()){
+                updateEmployeeResponse.setFirstName(updateEmployee.getFirstName());
+                updateEmployeeResponse.setLastName(updateEmployee.getLastName());
+                updateEmployeeResponse.setEmailId(updateEmployee.getEmailId());
+                updateEmployeeResponse.setRole(updateEmployee.getRole());
+                updateEmployeeResponse.setSupervisor(updateEmployee.getSupervisor());
+                employeeRepository.save(updateEmployeeResponse);
             }else{
                 throw new RuntimeException("Employee with ID not found. Update unsuccessful.");
             }

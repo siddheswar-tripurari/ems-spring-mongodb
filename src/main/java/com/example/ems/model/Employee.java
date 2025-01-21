@@ -14,7 +14,7 @@ public class Employee {
     private String emailId;
     private String role;
     private String supervisor;
-    private String status;
+    private boolean active;
 
 
     //Setter
@@ -43,8 +43,8 @@ public class Employee {
         this.supervisor = supervisor;
     }
 
-    public void setStatus(String status){
-        this.status = status;
+    public void setStatus(boolean active){
+        this.active = active;
     }
 
     //Getter
@@ -73,7 +73,7 @@ public class Employee {
         return supervisor;
     }
 
-    public String getStatus(){
-        return status;
+    public boolean getStatus(){
+        return active;
     }
 }
