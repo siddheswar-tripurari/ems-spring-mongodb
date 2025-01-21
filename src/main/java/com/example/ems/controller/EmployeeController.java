@@ -20,9 +20,9 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping("/api/employee/create")
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee){
+    public ResponseEntity<String> createEmployee(@RequestBody Employee newEmployee){
         try {
-            employeeService.createEmployee(employee);
+            employeeService.createEmployee(newEmployee);
             return ResponseEntity.status(HttpStatus.CREATED).body("Employee Created Successfully.");
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -56,9 +56,9 @@ public class EmployeeController {
     }
 
     @PutMapping("/api/employee/update/{id}")
-    public ResponseEntity<String> updateEmployee(@PathVariable int id, @RequestBody Employee employee1){
+    public ResponseEntity<String> updateEmployee(@PathVariable int id, @RequestBody Employee employee){
         try {
-            employeeService.updateEmployee(id,employee1);
+            employeeService.updateEmployee(id,employee);
             return ResponseEntity.status(HttpStatus.OK).body("Employee updated successfully.");
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

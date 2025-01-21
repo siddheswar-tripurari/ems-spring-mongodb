@@ -27,7 +27,7 @@ function getEmployee() {
             liSupervisor.textContent = `Supervisor : ${item.supervisor}`;
             const liStatus = document.createElement('li');
             liStatus.classList.add('list-group-item','flex-fill');
-            liStatus.textContent = `Active : ${item.status}`;
+            liStatus.textContent = `Active : ${item.active}`;
             ul.appendChild(liId);
             ul.appendChild(liFirstName);
             ul.appendChild(liLastName);

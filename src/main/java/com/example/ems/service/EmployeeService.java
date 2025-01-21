@@ -26,10 +26,10 @@ public class EmployeeService {
             id += 1;
         }else{
             List<Employee> employees = employeeRepository.getEmployeesInDescendingOrder();
-            id = employees.get(0).getId() + 1;
+            id = employees.getFirst().getId() + 1;
         }
         newEmployee.setId(id);
-        newEmployee.setStatus(true);
+        newEmployee.setActive(true);
         employeeRepository.save(newEmployee);
     }
 
@@ -42,14 +42,14 @@ public class EmployeeService {
             throw new RuntimeException("Employee Not Found. Deleted unsuccessfully.");
         }
         Employee deleteEmployee = employeeRepository.findById(id).get();
-        deleteEmployee.setStatus(false);
+        deleteEmployee.setActive(false);
         employeeRepository.save(deleteEmployee);
     }
 
     public void updateEmployee(int id, Employee updateEmployee){
         try {
             Employee updateEmployeeResponse = employeeRepository.findById(id).orElseThrow(()-> new Exception("Error"));
-            if(updateEmployeeResponse.getStatus()){
+            if(updateEmployeeResponse.isActive()){
                 updateEmployeeResponse.setFirstName(updateEmployee.getFirstName());
                 updateEmployeeResponse.setLastName(updateEmployee.getLastName());
                 updateEmployeeResponse.setEmailId(updateEmployee.getEmailId());

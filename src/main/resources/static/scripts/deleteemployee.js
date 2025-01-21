@@ -6,7 +6,7 @@ function deleteEmployee(){
    .then(data => {
        alert(data);
        document.getElementById('empid').value = '';
-        location.href = 'http://localhost:8080/allemployees.html';
+       //location.href = 'http://localhost:8080/allemployees.html';
    })
    .catch(error => console.log(error));
 }
