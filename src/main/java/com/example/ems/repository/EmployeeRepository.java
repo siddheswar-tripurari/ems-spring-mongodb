@@ -17,5 +17,5 @@ public interface EmployeeRepository extends MongoRepository<Employee,Integer> {
     List<Employee> findAllActiveEmployees();
 
     @Query(value = "{}", sort = "{'_id': -1}")
-    List<Employee> getLastInsertedEmployee();
+    List<Employee> getEmployeesInDescendingOrder();
 }

@@ -12,11 +12,10 @@ import java.util.Optional;
 @Service
 public class EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
     int id = 109750;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAllActiveEmployees();
@@ -26,7 +25,7 @@ public class EmployeeService {
         if(employeeRepository.count() == 0){
             id += 1;
         }else{
-            List<Employee> employees = employeeRepository.getLastInsertedEmployee();
+            List<Employee> employees = employeeRepository.getEmployeesInDescendingOrder();
             id = employees.get(0).getId() + 1;
         }
         newEmployee.setId(id);
@@ -42,9 +41,9 @@ public class EmployeeService {
         if(!employeeRepository.existsById(id)){
             throw new RuntimeException("Employee Not Found. Deleted unsuccessfully.");
         }
-        Employee emp = employeeRepository.findById(id).get();
-        emp.setStatus(false);
-        employeeRepository.save(emp);
+        Employee deleteEmployee = employeeRepository.findById(id).get();
+        deleteEmployee.setStatus(false);
+        employeeRepository.save(deleteEmployee);
     }
 
     public void updateEmployee(int id, Employee updateEmployee){
