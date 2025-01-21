@@ -11,17 +11,23 @@ import java.util.Optional;
 @Service
 public class EmployeeService {
 
+    int id = 109750;
+
     @Autowired
     private EmployeeRepository employeeRepository;
 
     public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+        return employeeRepository.findAllActiveEmployees();
     }
 
     public void createEmployee(Employee employee){
+        /*
         if(employeeRepository.existsById(employee.getId())){
             throw new RuntimeException("Error: Employee with ID " + employee.getId() + " already exists.");
-        }
+        }*/
+        id += 1;
+        employee.setId(id);
+        employee.setStatus("Active");
         employeeRepository.save(employee);
     }
 
@@ -33,18 +39,26 @@ public class EmployeeService {
         if(!employeeRepository.existsById(id)){
             throw new RuntimeException("Employee Not Found. Deleted unsuccessfully.");
         }
-        employeeRepository.deleteById(id);
+/*        employeeRepository.deleteById(id);*/
+        Employee emp = employeeRepository.findById(id).get();
+        emp.setStatus("In-Active");
+        employeeRepository.save(emp);
+
     }
 
     public void updateEmployee(int id, Employee employee1){
         try {
             Employee update = employeeRepository.findById(id).orElseThrow(()-> new Exception("Error"));
-            update.setFirstName(employee1.getFirstName());
-            update.setLastName(employee1.getLastName());
-            update.setEmailId(employee1.getEmailId());
-            update.setRole(employee1.getRole());
-            update.setSupervisor(employee1.getSupervisor());
-            employeeRepository.save(update);
+            if(update.getStatus().equals("Active")){
+                update.setFirstName(employee1.getFirstName());
+                update.setLastName(employee1.getLastName());
+                update.setEmailId(employee1.getEmailId());
+                update.setRole(employee1.getRole());
+                update.setSupervisor(employee1.getSupervisor());
+                employeeRepository.save(update);
+            }else{
+                throw new RuntimeException("Employee with ID not found. Update unsuccessful.");
+            }
         } catch (Exception e){
             throw new RuntimeException("Employee with ID not found. Update unsuccessful.");
         }

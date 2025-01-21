@@ -14,6 +14,7 @@ public class Employee {
     private String emailId;
     private String role;
     private String supervisor;
+    private String status;
 
 
     //Setter
@@ -42,6 +43,10 @@ public class Employee {
         this.supervisor = supervisor;
     }
 
+    public void setStatus(String status){
+        this.status = status;
+    }
+
     //Getter
 
     public int getId(){
@@ -66,5 +71,9 @@ public class Employee {
 
     public String getSupervisor(){
         return supervisor;
+    }
+
+    public String getStatus(){
+        return status;
     }
 }

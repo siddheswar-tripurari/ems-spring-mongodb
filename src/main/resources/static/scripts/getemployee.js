@@ -25,12 +25,16 @@ function getEmployee() {
             const liSupervisor = document.createElement('li');
             liSupervisor.classList.add('list-group-item','flex-fill');
             liSupervisor.textContent = `Supervisor : ${item.supervisor}`;
+            const liStatus = document.createElement('li');
+            liStatus.classList.add('list-group-item','flex-fill');
+            liStatus.textContent = `Status : ${item.status}`;
             ul.appendChild(liId);
             ul.appendChild(liFirstName);
             ul.appendChild(liLastName);
             ul.appendChild(liEmail);
             ul.appendChild(liRole);
             ul.appendChild(liSupervisor);
+            ul.appendChild(liStatus)
         })
         .catch(error => {
             alert('Employee Not Found.');
