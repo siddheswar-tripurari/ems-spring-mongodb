@@ -21,10 +21,6 @@ public class EmployeeService {
     }
 
     public void createEmployee(Employee employee){
-        /*
-        if(employeeRepository.existsById(employee.getId())){
-            throw new RuntimeException("Error: Employee with ID " + employee.getId() + " already exists.");
-        }*/
         id += 1;
         employee.setId(id);
         employee.setStatus("Active");
@@ -39,7 +35,6 @@ public class EmployeeService {
         if(!employeeRepository.existsById(id)){
             throw new RuntimeException("Employee Not Found. Deleted unsuccessfully.");
         }
-/*        employeeRepository.deleteById(id);*/
         Employee emp = employeeRepository.findById(id).get();
         emp.setStatus("In-Active");
         employeeRepository.save(emp);
