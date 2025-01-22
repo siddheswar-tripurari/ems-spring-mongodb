@@ -97,10 +97,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    private EmployeeService employeeService;
 &nbsp;
 &nbsp;    @PostMapping(&quot;/api/employee/create&quot;)
-&nbsp;    public ResponseEntity&lt;String&gt; createEmployee(@RequestBody Employee employee){
+&nbsp;    public ResponseEntity&lt;String&gt; createEmployee(@RequestBody Employee newEmployee){
 &nbsp;        try {
-<b class="nc">&nbsp;            employeeService.createEmployee(employee);</b>
-<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK).body(&quot;Employee Created Successfully.&quot;);</b>
+<b class="nc">&nbsp;            employeeService.createEmployee(newEmployee);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.CREATED).body(&quot;Employee Created Successfully.&quot;);</b>
 &nbsp;        } catch (RuntimeException e){
 <b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());</b>
 &nbsp;        }
@@ -109,14 +109,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    @GetMapping(&quot;/api/employees&quot;)
 &nbsp;    public ResponseEntity&lt;List&lt;Employee&gt;&gt; getAllEmployees(){
 <b class="nc">&nbsp;        List&lt;Employee&gt; employeesList = employeeService.getAllEmployees();</b>
-<b class="nc">&nbsp;        return ResponseEntity.ok(employeesList);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK).body(employeesList);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/api/employee/get/{id}&quot;)
 &nbsp;    public ResponseEntity&lt;?&gt; getEmployeeById(@PathVariable int id){
 &nbsp;        try {
 <b class="nc">&nbsp;            Employee emp = employeeService.getEmployeeById(id).orElseThrow(()-&gt; new RuntimeException(&quot;Employee not found.&quot;));</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(emp);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK).body(emp);</b>
 &nbsp;        } catch (RuntimeException e){
 <b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());</b>
 &nbsp;        }
@@ -126,17 +126,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    public ResponseEntity&lt;String&gt; deleteEmployee(@PathVariable int id){
 &nbsp;        try{
 <b class="nc">&nbsp;            employeeService.deleteEmployee(id);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Employee Deleted Successfully.&quot;);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK).body(&quot;Employee Deleted Successfully.&quot;);</b>
 &nbsp;        } catch (RuntimeException e) {
 <b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
 &nbsp;    @PutMapping(&quot;/api/employee/update/{id}&quot;)
-&nbsp;    public ResponseEntity&lt;String&gt; updateEmployee(@PathVariable int id, @RequestBody Employee employee1){
+&nbsp;    public ResponseEntity&lt;String&gt; updateEmployee(@PathVariable int id, @RequestBody Employee employee){
 &nbsp;        try {
-<b class="nc">&nbsp;            employeeService.updateEmployee(id,employee1);</b>
-<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Employee updated successfully.&quot;);</b>
+<b class="nc">&nbsp;            employeeService.updateEmployee(id,employee);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK).body(&quot;Employee updated successfully.&quot;);</b>
 &nbsp;        } catch (RuntimeException e){
 <b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());</b>
 &nbsp;        }
@@ -166,7 +166,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-01-07 22:33</div>
+    <div style="float:right;">generated on 2025-01-22 12:29</div>
 </div>
 </body>
 </html>

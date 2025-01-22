@@ -2,27 +2,22 @@ package com.example.ems.service;
 
 import com.example.ems.model.Employee;
 import com.example.ems.repository.EmployeeRepository;
-//import org.junit.jupiter.api.Assertions;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
 
-
 @ExtendWith(MockitoExtension.class)
-public class EmployeeServiceTests{
+class EmployeeServiceTests{
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -30,218 +25,258 @@ public class EmployeeServiceTests{
     @InjectMocks
     private EmployeeService employeeService;
 
-//    private Employee employee;
-//
-//    @BeforeEach
-//    void setUp(){
-//        MockitoAnnotations.openMocks(this);
-//        employee = new Employee();
-//        employee.setId(109756);
-//        employee.setFirstName("Siddhu");
-//        employee.setLastName("T");
-//        employee.setEmailId("siddhu@gmail.com");
-//        employee.setRole("SET");
-//        employee.setSupervisor("Ejaz Ansari");
-//    }
-
     @Test
-    void testCreateEmployee_Successfully(){
+    void testGetAllEmployees(){
 
         // Arrange
         Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
+        employee.setFirstName("John");
+        employee.setRole("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
 
-        //Mocking
-        when(employeeRepository.existsById(employee.getId())).thenReturn(false);
-        when(employeeRepository.save(employee)).thenReturn(employee);
+        //Mock
+        when(employeeRepository.findAllActiveEmployees()).thenReturn(List.of(employee));
 
-        //Act
-        employeeService.createEmployee(employee);
+        // Act
+        List<Employee> getAllEmployees = employeeService.getAllEmployees();
 
         //Assert
-        Assertions.assertThat(employee.getId()).isEqualTo(109756);
-        verify(employeeRepository, times(1)).save(employee);
+        org.junit.jupiter.api.Assertions.assertEquals("John",getAllEmployees.getFirst().getFirstName());
+        org.junit.jupiter.api.Assertions.assertEquals(true,getAllEmployees.getFirst().isActive());
+        verify(employeeRepository,times(1)).findAllActiveEmployees();
+
     }
 
     @Test
-    void testGetAllEmployees(){
-        // Arrange
-        Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
+    void testCreateEmployeeShouldCreateWithNewEmployeeId(){
 
-        // Mocking
-        when(employeeRepository.findAll()).thenReturn(List.of(employee));
+        // Arrange
+
+        Employee employee = new Employee();
+        employee.setFirstName("John");
+        employee.setRole("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
+
+        when(employeeRepository.count()).thenReturn(0L);
+        when(employeeRepository.save(employee)).thenReturn(employee);
 
         // Act
-        List<Employee> allEmployees = employeeService.getAllEmployees();
+        employeeService.createEmployee(employee);
 
         // Assert
-        Assertions.assertThat(allEmployees.size()).isEqualTo(1);
+        org.junit.jupiter.api.Assertions.assertEquals(109751,employee.getId());
+        verify(employeeRepository,times(1)).save(employee);
+    }
+
+    @Test
+    void testCreateEmployeeShouldCreateEmployeeIdByTakingPreviousEmployeeID(){
+
+        // Arrange
+
+        Employee employee = new Employee();
+        employee.setId(10001);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
+
+        Employee newEmp = new Employee();
+        newEmp.setFirstName("John");
+        newEmp.setLastName("Doe");
+        newEmp.setEmailId("John.Doe@vonage.com");
+        newEmp.setRole("Manager");
+        newEmp.setSupervisor("Jane Doe");
+        newEmp.setActive(true);
+
+        List<Employee> prevEmployee = new ArrayList<>();
+        prevEmployee.add(employee);
+
+        //Mock
+        when(employeeRepository.count()).thenReturn(1L);
+        when(employeeRepository.getEmployeesInDescendingOrder()).thenReturn(prevEmployee);
+
+        // Act
+        employeeService.createEmployee(newEmp);
+
+        // Assert
+        Assertions.assertEquals(10002,newEmp.getId());
+        verify(employeeRepository,times(1)).getEmployeesInDescendingOrder();
     }
 
     @Test
     void testGetEmployeeById(){
 
         // Arrange
-        Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
 
-        //Mocking
-        when(employeeRepository.findById(109756)).thenReturn(Optional.of(employee));
+        Employee employee = new Employee();
+        employee.setId(10001);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
+
+        // Mock
+        when(employeeRepository.findById(10001)).thenReturn(Optional.of(employee));
 
         // Act
-        Optional<Employee> emp = employeeService.getEmployeeById(109756);
-
-        Assertions.assertThat(emp.get().getFirstName()).isEqualTo("Siddhu");
-        Assertions.assertThat(emp.get().getLastName()).isNotEmpty();
-    }
-
-    @Test
-    void testGetEmployeeById_NotFound(){
-
-        // Arrange
-        Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
-
-        //Mock
-        when(employeeRepository.findById(109757)).thenReturn(Optional.empty());
-
-        //Act
-        Optional<Employee> emp = employeeService.getEmployeeById(109757);
-
-        //Assert
-        Assertions.assertThat(emp).isEmpty();
-    }
-
-    @Test
-    void testDeleteEmployee(){
-
-        // Arrange
-        Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
-
-        //Mock
-        when(employeeRepository.existsById(109756)).thenReturn(true);
-
-        //Act
-        employeeService.deleteEmployee(109756);
+        Optional<Employee> getEmployee = employeeService.getEmployeeById(10001);
 
         // Assert
-        verify(employeeRepository, times(1)).deleteById(109756);
+        Assertions.assertEquals("John",getEmployee.get().getFirstName());
+        Assertions.assertNotNull(getEmployee);
     }
 
     @Test
-    void testUpdateEmployee(){
+    void testDeleteEmployeeShouldMakeEmployeeInactive(){
 
         // Arrange
         Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
+        employee.setId(10001);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
 
         // Mock
-        when(employeeRepository.findById(109756)).thenReturn(Optional.of(employee));
-        when(employeeRepository.save(employee)).thenReturn(employee);
+        when(employeeRepository.existsById(10001)).thenReturn(true);
+        when(employeeRepository.findById(10001)).thenReturn(Optional.of(employee));
 
-        Employee updated = new Employee();
-        updated.setFirstName("Siddheswar");
-        updated.setLastName("Tripurari");
-        updated.setEmailId("siddhu@gmail.com");
-        updated.setRole("SET");
-        updated.setSupervisor("Ejaz Ansari");
+        // Act
+        employeeService.deleteEmployee(10001);
 
-        //Act
-        employeeService.updateEmployee(109756, updated);
-
-        //Assert
-        Assertions.assertThat(employee.getFirstName()).isEqualTo("Siddheswar");
-        Assertions.assertThat(employee.getLastName()).isNotEqualTo("T");
-        verify(employeeRepository, times(1)).save(employee);
+        // Assert
+        Assertions.assertEquals(false,employee.isActive());
     }
 
     @Test
-    void testCreateEmployeeThrowsExceptionWhenEmployeeAlreadyExists(){
+    void testDeleteEmployeeShouldThrowException(){
 
-        // Arrange
-        Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
 
         // Mock
-        when(employeeRepository.existsById(employee.getId())).thenReturn(true);
+        when(employeeRepository.existsById(10002)).thenReturn(false);
 
-        //Act and Assert
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->employeeService.createEmployee(employee));
+        // Act
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class,()->employeeService.deleteEmployee(10002));
+
+        // Assert
+        Assertions.assertEquals("Employee Not Found. Deleted unsuccessfully.", exception.getMessage());
+        verify(employeeRepository, never()).findById(10002);
 
     }
 
     @Test
-    void testDeleteEmployeeThrowsExceptionWhenEmployeeNotFound(){
+    void testUpdateEmployeeShouldUpdateActiveEmployee(){
 
         // Arrange
         Employee employee = new Employee();
-        employee.setId(109756);
-        employee.setFirstName("Siddhu");
-        employee.setLastName("T");
-        employee.setEmailId("siddhu@gmail.com");
-        employee.setRole("SET");
-        employee.setSupervisor("Ejaz Ansari");
-
-        when(employeeRepository.existsById(109757)).thenReturn(false);
-
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->employeeService.deleteEmployee(employee.getId()));
-    }
-
-    @Test
-    void testUpdateEmployeeThrowsExceptionWhenEmployeeNotFound(){
+        employee.setId(10001);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
 
         Employee updateEmployee = new Employee();
-        updateEmployee.setFirstName("siddhu");
+        updateEmployee.setFirstName("Jonah");
+        updateEmployee.setLastName("Johnson");
+        updateEmployee.setEmailId("Johnson.J@vonage.com");
+        updateEmployee.setRole("Manager");
+        updateEmployee.setSupervisor("Jane Doe");
 
-        when(employeeRepository.findById(109757)).thenReturn(Optional.empty());
 
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->employeeService.updateEmployee(109757,
-                updateEmployee)
-        );
+        // Mock
+        when(employeeRepository.findById(10001)).thenReturn(Optional.of(employee));
+
+        // Act
+        employeeService.updateEmployee(10001,updateEmployee);
+
+        // Assert
+        Assertions.assertEquals("Jonah",employee.getFirstName());
+        Assertions.assertEquals("Johnson",employee.getLastName());
+        verify(employeeRepository,times(1)).findById(10001);
+
     }
 
     @Test
-    void testDeleteEmployeeThrowsEmployeeNotFoundException(){
-        when(employeeRepository.existsById(109756)).thenReturn(false);
-        org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class,()->employeeService.deleteEmployee(109756));
+    void testUpdateEmployeeShouldThrowErrorWhenUpdateInactiveEmployee(){
+
+        // Arrange
+        Employee employee = new Employee();
+        employee.setId(10001);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(false);
+
+        Employee updateEmployee = new Employee();
+        updateEmployee.setFirstName("Jonah");
+        updateEmployee.setLastName("Johnson");
+        updateEmployee.setEmailId("Johnson.J@vonage.com");
+        updateEmployee.setRole("Manager");
+        updateEmployee.setSupervisor("Jane Doe");
+
+
+        // Mock
+        when(employeeRepository.findById(10001)).thenReturn(Optional.of(employee));
+
+        // Act
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class,()->employeeService.updateEmployee(10001,updateEmployee));
+
+        // Assert
+
+        Assertions.assertEquals("Employee with ID not found. Update unsuccessful.", exception.getMessage());
+
     }
+
+    @Test
+    void testEmployeeShouldThrowErrorWhenEmployeeNotFound(){
+
+        // Arrange
+
+        Employee employee = new Employee();
+        employee.setId(10001);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmailId("John.Doe@vonage.com");
+        employee.setRole("Manager");
+        employee.setSupervisor("Jane Doe");
+        employee.setActive(true);
+
+        Employee updateEmployee = new Employee();
+        updateEmployee.setFirstName("Jonah");
+        updateEmployee.setLastName("Johnson");
+        updateEmployee.setEmailId("Johnson.J@vonage.com");
+        updateEmployee.setRole("Manager");
+        updateEmployee.setSupervisor("Jane Doe");
+
+        // Mock
+        when(employeeRepository.findById(10002)).thenReturn(Optional.empty());
+
+        // Act
+
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class,()->employeeService.updateEmployee(10002,updateEmployee));
+
+        // Assert
+
+        Assertions.assertEquals("Employee with ID not found. Update unsuccessful.", exception.getMessage());
+    }
+
+
 
 
 }
