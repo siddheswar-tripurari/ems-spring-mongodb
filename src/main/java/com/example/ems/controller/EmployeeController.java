@@ -21,8 +21,8 @@ public class EmployeeController {
     @PostMapping("/api/employee/create")
     public ResponseEntity<String> createEmployee(@RequestBody Employee newEmployee){
         try {
-            employeeService.createEmployee(newEmployee);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Employee Created Successfully.");
+            int employeeId = employeeService.createEmployee(newEmployee);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Employee: " + employeeId +" Created Successfully.");
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

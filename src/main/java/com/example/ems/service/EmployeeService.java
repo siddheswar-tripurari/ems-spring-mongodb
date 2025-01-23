@@ -23,7 +23,7 @@ public class EmployeeService {
         return employeeRepository.findAllActiveEmployees();
     }
 
-    public void createEmployee(Employee newEmployee){
+    public int createEmployee(Employee newEmployee){
         if(employeeRepository.count() == 0){
             id += 1;
         }else{
@@ -33,6 +33,7 @@ public class EmployeeService {
         newEmployee.setId(id);
         newEmployee.setActive(true);
         employeeRepository.save(newEmployee);
+        return id;
     }
 
     public Optional<Employee> getEmployeeById(int id) {
