@@ -5,27 +5,20 @@ import com.example.ems.model.Employee;
 import com.example.ems.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.http.MediaType;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = EmployeeController.class)
-public class EmployeeControllerTests {
+class EmployeeControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,25 +39,24 @@ public class EmployeeControllerTests {
         employee.setSupervisor("Ejaz Ansari");
     }
 
+    @Test
+    void testCreateEmployeeSuccessfully() throws Exception {
 
-//    @Test
-//    void testCreateEmployeeSuccessfully() throws Exception {
-//
-//        doNothing().when(employeeService).createEmployee(employee);
-//
-//        mockMvc.perform(post("/api/employee/create")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"id\":11011," +
-//                                "\"firstName\":\"Siddhu\"," +
-//                                "\"lastName\":\"T\"," +
-//                                "\"emailId\":\"siddhu@gmail.com\"," +
-//                                "\"role\":\"SET\"," +
-//                                "\"supervisor\":\"Ejaz Ansari\"}"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("Employee Created Successfully."));
-//
-//        verify(employeeService, times(1)).createEmployee(any(Employee.class));
-//    }
+        doNothing().when(employeeService).createEmployee(employee);
+
+        mockMvc.perform(post("/api/employee/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":11011," +
+                                "\"firstName\":\"Siddhu\"," +
+                                "\"lastName\":\"T\"," +
+                                "\"emailId\":\"siddhu@gmail.com\"," +
+                                "\"role\":\"SET\"," +
+                                "\"supervisor\":\"Ejaz Ansari\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("Employee Created Successfully."));
+
+        verify(employeeService, times(1)).createEmployee(any(Employee.class));
+    }
 
     @Test
     void testGetAllEmployeesSuccessfully() throws Exception {

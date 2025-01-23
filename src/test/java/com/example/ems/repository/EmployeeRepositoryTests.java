@@ -1,114 +1,88 @@
-/*
 package com.example.ems.repository;
 
 import com.example.ems.model.Employee;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.repository.CrudRepository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class EmployeeRepositoryTests {
+@ExtendWith(MockitoExtension.class)
+class EmployeeRepositoryTests {
 
-    @Autowired
+    @Mock
     private EmployeeRepository employeeRepository;
 
-
     @Test
-    void testFindById(){
-        //Arrange
-        Employee emp = new Employee();
-        emp.setId(111);
-        emp.setFirstName("John");
-        emp.setLastName("Wick");
-        emp.setRole("SDE-II");
-        emp.setEmailId("john.wick@gmail.com");
-        emp.setSupervisor("Continental");
+    void testFindAllActiveEmployees(){
 
-        employeeRepository.save(emp);
+        // Arrange
+        Employee newEmployee = new Employee();
+        newEmployee.setFirstName("John");
+        newEmployee.setLastName("Doe");
+        newEmployee.setEmailId("John.Doe@gmail.com");
+        newEmployee.setRole("Manager");
+        newEmployee.setSupervisor("Jane Doe");
+        newEmployee.setActive(true);
+
+        List<Employee> mockActiveEmployee = List.of(newEmployee);
+
+        // Mocking
+        when(employeeRepository.findAllActiveEmployees()).thenReturn(mockActiveEmployee);
 
         // Act
-        Optional<Employee> employee = employeeRepository.findById(emp.getId());
-        // or Employee emp = employeeRepository.findBy(emp.getId()).get();
-        // System.out.println(employee);
+        List<Employee> allActiveEmployees = employeeRepository.findAllActiveEmployees();
 
         //Assert
-        Assertions.assertTrue(employee.isPresent());
-        Assertions.assertEquals(111,employee.get().getId());
+        Assertions.assertNotNull(allActiveEmployees);
+        Assertions.assertTrue(!allActiveEmployees.isEmpty());
+        Assertions.assertEquals("John",allActiveEmployees.get(0).getFirstName());
+        verify(employeeRepository,times(1)).findAllActiveEmployees();
+
     }
 
     @Test
-    void testSaveEmployee(){
-        //Arrange
-        Employee saveEmployee = new Employee();
-        saveEmployee.setId(11111);
-        saveEmployee.setFirstName("John");
-        saveEmployee.setLastName("Smith");
-        saveEmployee.setEmailId("johnsmith@gmail.com");
-        saveEmployee.setRole("SDE");
-        saveEmployee.setSupervisor("Alex Smith");
+    void testGetAllEmployeesInDescendingOrder(){
 
-        //Act
-        Employee savedEmployee = employeeRepository.save(saveEmployee);
-
-        //Assert
-        Assertions.assertNotNull(savedEmployee);
-        Assertions.assertEquals(savedEmployee.getFirstName(),"John");
-    }
-
-    @Test
-    void testDeleteEmployee() {
-        //Arrange
-        Employee emp = new Employee();
-        emp.setId(1);
-
-        employeeRepository.save(emp);
-
-        //Act
-        employeeRepository.deleteById(emp.getId());
-
-        //Assert
-        Assertions.assertFalse(employeeRepository.existsById(1));
-    }
-
-    @Test
-    void testFindAllEmployees(){
         // Arrange
+
         Employee employee1 = new Employee();
-        employee1.setId(1111);
-        employee1.setFirstName("test");
-        employee1.setLastName("001");
-        employee1.setEmailId("test@gmail.com");
-        employee1.setRole("SRE");
-        employee1.setSupervisor("John");
+        employee1.setFirstName("John");
+        employee1.setLastName("Doe");
+        employee1.setEmailId("John.Doe@gmail.com");
+        employee1.setRole("Manager");
+        employee1.setSupervisor("Jane Doe");
+        employee1.setActive(true);
 
         Employee employee2 = new Employee();
-        employee2.setSupervisor("Alex");
-        employee2.setRole("SDE");
-        employee2.setId(111011);
-        employee2.setEmailId("test@vonage.com");
-        employee2.setFirstName("test02");
-        employee2.setLastName("002");
+        employee2.setFirstName("Jane");
+        employee2.setLastName("Doe");
+        employee2.setEmailId("Jane.Doe@gmail.com");
+        employee2.setRole("Manager");
+        employee2.setSupervisor("Alex Doe");
+        employee2.setActive(true);
 
-        Employee savedEmployee1 = employeeRepository.save(employee1);
-        Employee savedEmployee2 = employeeRepository.save(employee2);
+        List<Employee> allEmployees = new ArrayList<>();
+        allEmployees.add(employee1);
+        allEmployees.add(employee2);
+
+        //Mocking
+        when(employeeRepository.getEmployeesInDescendingOrder()).thenReturn(allEmployees.reversed());
 
         //Act
-        List<Employee> allEmployees = employeeRepository.findAll();
+        List<Employee> employeeDescOrder = employeeRepository.getEmployeesInDescendingOrder();
 
         //Assert
-        Assertions.assertNotNull(allEmployees);
-        Assertions.assertTrue(allEmployees.size() > 0);
+        Assertions.assertEquals("Jane",employeeDescOrder.getFirst().getFirstName());
+        verify(employeeRepository,times(1)).getEmployeesInDescendingOrder();
+
     }
 
 }
-*/

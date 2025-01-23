@@ -2,27 +2,26 @@ package com.example.ems.controller;
 
 import com.example.ems.model.Employee;
 import com.example.ems.service.EmployeeService;
-import org.apache.catalina.startup.EngineRuleSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class EmployeeController {
 
+    private final EmployeeService employeeService;
+
     @Autowired
-    private EmployeeService employeeService;
+    public EmployeeController(EmployeeService employeeService){
+        this.employeeService = employeeService;
+    }
 
     @PostMapping("/api/employee/create")
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee){
+    public ResponseEntity<String> createEmployee(@RequestBody Employee newEmployee){
         try {
-            employeeService.createEmployee(employee);
+            employeeService.createEmployee(newEmployee);
             return ResponseEntity.status(HttpStatus.CREATED).body("Employee Created Successfully.");
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -56,9 +55,9 @@ public class EmployeeController {
     }
 
     @PutMapping("/api/employee/update/{id}")
-    public ResponseEntity<String> updateEmployee(@PathVariable int id, @RequestBody Employee employee1){
+    public ResponseEntity<String> updateEmployee(@PathVariable int id, @RequestBody Employee employee){
         try {
-            employeeService.updateEmployee(id,employee1);
+            employeeService.updateEmployee(id,employee);
             return ResponseEntity.status(HttpStatus.OK).body("Employee updated successfully.");
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
