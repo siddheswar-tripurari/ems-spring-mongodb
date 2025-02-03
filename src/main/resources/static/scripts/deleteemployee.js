@@ -8,5 +8,9 @@ function deleteEmployee(){
        document.getElementById('empid').value = '';
        //location.href = 'http://localhost:8080/allemployees.html';
    })
-   .catch(error => console.log(error));
+   .catch(error => {
+       if(error.message.includes('404')){
+
+       }
+   });
 }
