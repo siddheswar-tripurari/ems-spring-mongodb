@@ -1,0 +1,20 @@
+services:
+
+  spring-app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    ports:
+      - "27000:27017"
+    volumes:
+      - mongodata:/data/db
+
+
+volumes:
+  mongodata:
+
