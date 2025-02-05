@@ -41,31 +41,18 @@ class EmployeeControllerTests {
     @Test
     void testCreateEmployeeSuccessfully() throws Exception {
 
-<<<<<<< HEAD
-        doNothing().when(employeeService).createEmployee(employee);
-
-        mockMvc.perform(post("/api/employee/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":11011," +
-                                "\"firstName\":\"Siddhu\"," +
-=======
         when(employeeService.createEmployee(employee)).thenReturn(10000);
 
         mockMvc.perform(post("/api/employee/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 "{\"firstName\":\"Siddhu\"," +
->>>>>>> ems-2.0
                                 "\"lastName\":\"T\"," +
                                 "\"emailId\":\"siddhu@gmail.com\"," +
                                 "\"role\":\"SET\"," +
                                 "\"supervisor\":\"Ejaz Ansari\"}"))
                 .andExpect(status().isCreated())
-<<<<<<< HEAD
-                .andExpect(content().string("Employee Created Successfully."));
-=======
                 .andExpect(content().string("Employee: " + employee.getId() +" Created Successfully."));
->>>>>>> ems-2.0
 
         verify(employeeService, times(1)).createEmployee(any(Employee.class));
     }
